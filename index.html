@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>CDR临床痴呆评定量表评分系统</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="bg-white shadow-lg rounded-lg p-6">
+            <h1 class="text-2xl font-bold text-center text-blue-600 mb-6">CDR临床痴呆评定量表评分系统</h1>
+            
+            <form id="cdrForm" class="space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- 记忆力 -->
+                    <div class="form-group">
+                        <label class="block text-gray-700 font-bold mb-2">记忆力</label>
+                        <select name="memory" class="w-full p-2 border rounded" required>
+                            <option value="">请选择记忆力评分</option>
+                            <option value="0">0 - 无记忆缺损</option>
+                            <option value="0.5">0.5 - 轻微遗忘</option>
+                            <option value="1">1 - 明显记忆障碍</option>
+                            <option value="2">2 - 严重记忆丧失</option>
+                            <option value="3">3 - 完全失去记忆</option>
+                        </select>
+                    </div>
+
+                    <!-- 定向感 -->
+                    <div class="form-group">
+                        <label class="block text-gray-700 font-bold mb-2">定向感</label>
+                        <select name="orientation" class="w-full p-2 border rounded" required>
+                            <option value="">请选择定向感评分</option>
+                            <option value="0">0 - 完全清晰</option>
+                            <option value="0.5">0.5 - 轻微模糊</option>
+                            <option value="1">1 - 明显障碍</option>
+                            <option value="2">2 - 严重障碍</option>
+                            <option value="3">3 - 完全丧失</option>
+                        </select>
+                    </div>
+
+                    <!-- 判断力 -->
+                    <div class="form-group">
+                        <label class="block text-gray-700 font-bold mb-2">判断力与问题解决</label>
+                        <select name="judgment" class="w-full p-2 border rounded" required>
+                            <option value="">请选择判断力评分</option>
+                            <option value="0">0 - 判断力正常</option>
+                            <option value="0.5">0.5 - 轻微下降</option>
+                            <option value="1">1 - 明显减退</option>
+                            <option value="2">2 - 无法独立解决问题</option>
+                            <option value="3">3 - 丧失判断能力</option>
+                        </select>
+                    </div>
+
+                    <!-- 社交活动 -->
+                    <div class="form-group">
+                        <label class="block text-gray-700 font-bold mb-2">社交活动</label>
+                        <select name="community_affairs" class="w-full p-2 border rounded" required>
+                            <option value="">请选择社交活动评分</option>
+                            <option value="0">0 - 社交功能正常</option>
+                            <option value="0.5">0.5 - 轻微下降</option>
+                            <option value="1">1 - 明显社交退缩</option>
+                            <option value="2">2 - 严重功能障碍</option>
+                            <option value="3">3 - 完全丧失社交能力</option>
+                        </select>
+                    </div>
+
+                    <!-- 家庭生活 -->
+                    <div class="form-group">
+                        <label class="block text-gray-700 font-bold mb-2">家庭生活</label>
+                        <select name="home_hobbies" class="w-full p-2 border rounded" required>
+                            <option value="">请选择家庭生活评分</option>
+                            <option value="0">0 - 家庭角色正常</option>
+                            <option value="0.5">0.5 - 轻微变化</option>
+                            <option value="1">1 - 需要部分支持</option>
+                            <option value="2">2 - 严重依赖照护</option>
+                            <option value="3">3 - 完全丧失能力</option>
+                        </select>
+                    </div>
+
+                    <!-- 个人生活护理 -->
+                    <div class="form-group">
+                        <label class="block text-gray-700 font-bold mb-2">个人生活护理</label>
+                        <select name="personal_care" class="w-full p-2 border rounded" required>
+                            <option value="">请选择个人生活护理评分</option>
+                            <option value="0">0 - 完全独立自理</option>
+                            <option value="0.5">0.5 - 轻微需要帮助</option>
+                            <option value="1">1 - 需要部分协助</option>
+                            <option value="2">2 - 大部分需要照料</option>
+                            <option value="3">3 - 完全依赖他人</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-center mt-6">
+                    <button type="submit" class="bg-blue-500 text-white px-6 py-2 rounded hover:bg-blue-600 transition">
+                        计算CDR评分
+                    </button>
+                </div>
+            </form>
+
+            <!-- 结果展示区域 -->
+            <div id="resultArea" class="mt-6 hidden">
+                <div class="bg-gray-50 p-4 rounded-lg">
+                    <h2 class="text-xl font-bold text-center mb-4">评分结果</h2>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <p class="font-semibold">CDR总分：<span id="cdrScore" class="text-blue-600"></span></p>
+                            <p class="font-semibold">诊断结果：<span id="cdrInterpretation" class="text-blue-600"></span></p>
+                        </div>
+                        <div>
+                            <canvas id="domainChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('cdrForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // 收集表单数据
+            const formData = {
+                memory: parseFloat(document.querySelector('select[name="memory"]').value),
+                orientation: parseFloat(document.querySelector('select[name="orientation"]').value),
+                judgment: parseFloat(document.querySelector('select[name="judgment"]').value),
+                community_affairs: parseFloat(document.querySelector('select[name="community_affairs"]').value),
+                home_hobbies: parseFloat(document.querySelector('select[name="home_hobbies"]').value),
+                personal_care: parseFloat(document.querySelector('select[name="personal_care"]').value)
+            };
+
+            // 权重配置
+            const domainWeights = {
+                memory: 4,
+                orientation: 1,
+                judgment: 2,
+                community_affairs: 1,
+                home_hobbies: 1,
+                personal_care: 1
+            };
+
+            // 计算CDR分数
+            const weightedScores = Object.keys(domainWeights).map(
+                domain => formData[domain] * domainWeights[domain]
+            );
+            const totalWeight = Object.values(domainWeights).reduce((a, b) => a + b, 0);
+            const cdrScore = weightedScores.reduce((a, b) => a + b, 0) / totalWeight;
+            const roundedScore = Math.round(cdrScore * 2) / 2;
+
+            // 解释分数
+            const interpretations = {
+                0: "无痴呆",
+                0.5: "可疑痴呆",
+                1: "轻度痴呆",
+                2: "中度痴呆",
+                3: "重度痴呆"
+            };
+            const interpretation = interpretations[
+                Object.keys(interpretations).reduce((a, b) => 
+                    Math.abs(b - roundedScore) < Math.abs(a - roundedScore) ? b : a
+                )
+            ];
+
+            // 显示结果
+            document.getElementById('cdrScore').textContent = roundedScore.toFixed(1);
+            document.getElementById('cdrInterpretation').textContent = interpretation;
+            document.getElementById('resultArea').classList.remove('hidden');
+
+            // 绘制域分数图表
+            const ctx = document.getElementById('domainChart').getContext('2d');
+            new Chart(ctx, {
+                type: 'radar',
+                data: {
+                    labels: ['记忆力', '定向感', '判断力', '社交活动', '家庭生活', '个人护理'],
+                    datasets: [{
+                        label: 'CDR认知域评分',
+                        data: Object.keys(domainWeights).map(domain => formData[domain]),
+                        backgroundColor: 'rgba(54, 162, 235, 0.2)',
+                        borderColor: 'rgb(54, 162, 235)',
+                        pointBackgroundColor: 'rgb(54, 162, 235)'
+                    }]
+                },
+                options: {
+                    scales: {
+                        r: {
+                            beginAtZero: true,
+                            max: 3
+                        }
+                    }
+                }
+            });
+        });
+    </script>
+<script>window.parent.postMessage({ action: "ready" }, "*"); 
+ 
+window.console = new Proxy(console, {
+  get(target, prop) {
+    if (['log', 'warn', 'error'].includes(prop)) {
+      return new Proxy(target[prop], {
+        apply(fn, thisArg, args) {
+          fn.apply(thisArg, args);
+          window.parent.postMessage({ action: 'console', 
+            type: prop, 
+            args: args.map((arg) => {
+              try {
+                return JSON.stringify(arg).replace(/^["']|["']$/g, '');
+              } catch (e) {
+                return arg;
+              }
+            }) 
+          }, '*');
+        }
+      });
+    }
+    return target[prop];
+  }
+});
+</script></body>
+</html>
